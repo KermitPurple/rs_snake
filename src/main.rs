@@ -25,16 +25,15 @@ impl Game {
 }
 
 struct Snake {
-    pos_x: i32,
-    pos_y: i32,
+    position: Vector2
 }
 
 impl Snake {
     fn render(&self, gl: &mut GlGraphics, args: &RenderArgs){
         const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
         let square = graphics::rectangle::square(
-            self.pos_x as f64,
-            self.pos_y as f64,
+            self.position.x as f64,
+            self.position.y as f64,
             10_f64
             );
         gl.draw(args.viewport(), |c, gl| {
@@ -42,6 +41,11 @@ impl Snake {
             graphics::rectangle(GREEN, square, transform, gl);
         });
     }
+}
+
+struct Vector2 {
+    x: i32,
+    y: i32
 }
 
 fn main() {
@@ -58,8 +62,10 @@ fn main() {
     let mut game = Game{
         gl: GlGraphics::new(opengl),
         snake: Snake {
-            pos_x: 10,
-            pos_y: 10
+            position: Vector2 {
+                x: 50,
+                y: 100
+            }
         }
     };
 
