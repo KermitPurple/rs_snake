@@ -16,6 +16,7 @@ enum Direction {
 struct Game {
     gl: GlGraphics,
     snake: Snake,
+    scale: i32,
 }
 
 impl Game {
@@ -24,11 +25,11 @@ impl Game {
         self.gl.draw(arg.viewport(), |_c, gl| {
             graphics::clear(BLACK, gl);
         });
-        self.snake.render(&mut self.gl, arg);
+        self.snake.render(&mut self.gl, arg, &self.scale);
     }
 
     fn update(&mut self){
-        self.snake.update();
+        self.snake.update(&self.scale);
     }
 }
 
@@ -38,12 +39,12 @@ struct Snake {
 }
 
 impl Snake {
-    fn render(&self, gl: &mut GlGraphics, args: &RenderArgs){
+    fn render(&self, gl: &mut GlGraphics, args: &RenderArgs, scale: &i32){
         const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
         let square = graphics::rectangle::square(
             self.position.x as f64,
             self.position.y as f64,
-            10_f64
+            *scale as f64,
             );
         gl.draw(args.viewport(), |c, gl| {
             let transform = c.transform;
@@ -51,12 +52,12 @@ impl Snake {
         });
     }
     
-    fn update(&mut self){
+    fn update(&mut self, scale: &i32){
         match self.direction {
-            Direction::Right => self.position.x += 1,
-            Direction::Left => self.position.x -= 1,
-            Direction::Up => self.position.y -= 1,
-            Direction::Down => self.position.y += 1,
+            Direction::Right => self.position.x += scale,
+            Direction::Left => self.position.x -= scale,
+            Direction::Up => self.position.y -= scale,
+            Direction::Down => self.position.y += scale,
             _ => unreachable!(),
         }
     }
@@ -86,7 +87,8 @@ fn main() {
                 y: 100
             },
             direction: Direction::Up
-        }
+        },
+        scale: 10
     };
 
     let mut events = Events::new(EventSettings::new());
