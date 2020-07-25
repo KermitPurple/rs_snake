@@ -6,8 +6,10 @@ extern crate piston;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
-use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
+use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent, ButtonEvent, ButtonArgs};
 use piston::window::WindowSettings;
+use piston::Button;
+use piston::Key;
 
 enum Direction {
     Right, Left, Up, Down
@@ -31,6 +33,10 @@ impl Game {
 
     fn update(&mut self){
         self.snake.update(&self.scale);
+    }
+
+    fn button_pressed(&mut self, b: &ButtonArgs){
+        self.snake.change_direction(&b);
     }
 }
 
@@ -60,6 +66,16 @@ impl Snake {
             Direction::Up => self.position.y -= scale,
             Direction::Down => self.position.y += scale,
             _ => unreachable!(),
+        }
+    }
+
+    fn change_direction(&mut self, b: &ButtonArgs){
+        match b.button {
+            Button::Keyboard(Key::D)|Button::Keyboard(Key::Right) => self.direction = Direction::Right,
+            Button::Keyboard(Key::A)|Button::Keyboard(Key::Left) => self.direction = Direction::Left,
+            Button::Keyboard(Key::W)|Button::Keyboard(Key::Up) => self.direction = Direction::Up,
+            Button::Keyboard(Key::S)|Button::Keyboard(Key::Down) => self.direction = Direction::Down,
+            _ => ()
         }
     }
 }
@@ -104,6 +120,9 @@ fn main() {
         }
         if let Some(u) = e.update_args() {
             game.update();
+        }
+        if let Some(b) = e.button_args(){
+            game.button_pressed(&b);
         }
     }
 }
