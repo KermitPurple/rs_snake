@@ -88,11 +88,11 @@ struct Vector2 {
 fn main() {
     let opengl = OpenGL::V3_2;
 
-    const size: [u32; 2] = [400, 400];
+    const SIZE: [u32; 2] = [400, 400];
 
     let mut window: Window = WindowSettings::new(
         "RsSnake",
-        size,
+        SIZE,
         ).graphics_api(opengl)
         .exit_on_esc(true)
         .build()
@@ -108,7 +108,7 @@ fn main() {
             direction: Direction::Up
         },
         scale: 10,
-        size: size
+        size: SIZE,
     };
 
     let mut settings = EventSettings::new();
