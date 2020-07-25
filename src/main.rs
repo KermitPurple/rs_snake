@@ -26,6 +26,10 @@ impl Game {
         });
         self.snake.render(&mut self.gl, arg);
     }
+
+    fn update(&mut self){
+        self.snake.update();
+    }
 }
 
 struct Snake {
@@ -45,6 +49,16 @@ impl Snake {
             let transform = c.transform;
             graphics::rectangle(GREEN, square, transform, gl);
         });
+    }
+    
+    fn update(&mut self){
+        match self.direction {
+            Direction::Right => self.position.x += 1,
+            Direction::Left => self.position.x -= 1,
+            Direction::Up => self.position.y -= 1,
+            Direction::Down => self.position.y += 1,
+            _ => unreachable!(),
+        }
     }
 }
 
@@ -79,6 +93,9 @@ fn main() {
     while let Some(e) = events.next(&mut window){
         if let Some(r) = e.render_args() {
             game.render(&r);
+        }
+        if let Some(u) = e.update_args() {
+            game.update();
         }
     }
 }
