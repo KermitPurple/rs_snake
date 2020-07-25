@@ -9,6 +9,10 @@ use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
 use piston::window::WindowSettings;
 
+enum Direction {
+    Right, Left, Up, Down
+}
+
 struct Game {
     gl: GlGraphics,
     snake: Snake,
@@ -25,7 +29,8 @@ impl Game {
 }
 
 struct Snake {
-    position: Vector2
+    position: Vector2,
+    direction: Direction
 }
 
 impl Snake {
@@ -65,7 +70,8 @@ fn main() {
             position: Vector2 {
                 x: 50,
                 y: 100
-            }
+            },
+            direction: Direction::Up
         }
     };
 
