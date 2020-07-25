@@ -19,7 +19,8 @@ struct Game {
     gl: GlGraphics,
     snake: Snake,
     scale: i32,
-    size: [u32; 2]
+    size: [u32; 2],
+    fruit: Fruit,
 }
 
 impl Game {
@@ -28,6 +29,7 @@ impl Game {
         self.gl.draw(arg.viewport(), |_c, gl| {
             graphics::clear(BLACK, gl);
         });
+        self.fruit.render(&mut self.gl, arg, &self.scale);
         self.snake.render(&mut self.gl, arg, &self.scale);
     }
 
@@ -85,6 +87,25 @@ struct Vector2 {
     y: i32
 }
 
+struct Fruit {
+    position: Vector2,
+}
+
+impl Fruit {
+    fn render(&self, gl: &mut GlGraphics, args: &RenderArgs, scale: &i32){
+        const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
+        let square = graphics::rectangle::square(
+            self.position.x as f64,
+            self.position.y as f64,
+            *scale as f64,
+            );
+        gl.draw(args.viewport(), |c, gl| {
+            let transform = c.transform;
+            graphics::rectangle(RED, square, transform, gl);
+        });
+    }
+}
+
 fn main() {
     let opengl = OpenGL::V3_2;
 
@@ -109,6 +130,12 @@ fn main() {
         },
         scale: 10,
         size: SIZE,
+        fruit: Fruit {
+            position: Vector2 {
+                x: 20,
+                y: 30,
+            },
+        },
     };
 
     let mut settings = EventSettings::new();
