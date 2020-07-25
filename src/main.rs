@@ -17,6 +17,7 @@ struct Game {
     gl: GlGraphics,
     snake: Snake,
     scale: i32,
+    size: [u32; 2]
 }
 
 impl Game {
@@ -71,9 +72,11 @@ struct Vector2 {
 fn main() {
     let opengl = OpenGL::V3_2;
 
+    const size: [u32; 2] = [400, 400];
+
     let mut window: Window = WindowSettings::new(
         "RsSnake",
-        [400, 400]
+        size,
         ).graphics_api(opengl)
         .exit_on_esc(true)
         .build()
@@ -88,7 +91,8 @@ fn main() {
             },
             direction: Direction::Up
         },
-        scale: 10
+        scale: 10,
+        size: size
     };
 
     let mut settings = EventSettings::new();
