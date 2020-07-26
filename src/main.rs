@@ -30,8 +30,11 @@ impl Game {
         self.gl.draw(arg.viewport(), |_c, gl| {
             graphics::clear(BLACK, gl);
         });
-        self.fruit.render(&mut self.gl, arg, &self.scale);
-        self.snake.render(&mut self.gl, arg, &self.scale);
+        if self.snake.alive{
+            self.fruit.render(&mut self.gl, arg, &self.scale);
+            self.snake.render(&mut self.gl, arg, &self.scale);
+        } else {
+        }
     }
 
     fn update(&mut self){
@@ -43,7 +46,10 @@ impl Game {
     }
 
     fn button_pressed(&mut self, b: &ButtonArgs){
-        self.snake.change_direction(&b);
+        if self.snake.alive {
+            self.snake.change_direction(&b);
+        } else {
+        }
     }
 }
 
@@ -53,6 +59,7 @@ struct Snake {
     length: u32,
     length_to_grow: u32,
     tail: Vec<Point>,
+    alive: bool,
 }
 
 impl Snake {
@@ -72,7 +79,7 @@ impl Snake {
             _ => unreachable!(),
         }
         if self.position.x < 0 || self.position.x >= size[0] as i32 || self.position.y < 0 || self.position.y >= size[1] as i32 {
-            println!("Dead");
+            self.alive = false;
         }
     }
 
@@ -161,6 +168,7 @@ fn main() {
             length: 0,
             length_to_grow: 0,
             tail: vec![],
+            alive: true,
         },
         scale: SCALE,
         size: SIZE,
