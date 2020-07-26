@@ -36,6 +36,9 @@ impl Game {
 
     fn update(&mut self){
         self.snake.update(&self.scale);
+        if self.snake.position == self.fruit.position {
+            self.fruit = Fruit::random(self.scale, self.size);
+        }
     }
 
     fn button_pressed(&mut self, b: &ButtonArgs){
@@ -113,6 +116,12 @@ impl Fruit {
                 y: rng.gen_range(0, size[1] as i32 / scale) * scale,
             }
         }
+    }
+}
+
+impl std::cmp::PartialEq for Vector2{
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y
     }
 }
 
