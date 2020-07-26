@@ -93,7 +93,6 @@ impl Snake {
             Direction::Left => self.position.x -= scale,
             Direction::Up => self.position.y -= scale,
             Direction::Down => self.position.y += scale,
-            _ => unreachable!(),
         }
         if self.position.x < 0 || self.position.x >= size[0] as i32 || self.position.y < 0 || self.position.y >= size[1] as i32 {
             self.alive = false;
