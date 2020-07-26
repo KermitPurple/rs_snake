@@ -54,17 +54,9 @@ struct Snake {
 impl Snake {
     fn render(&self, gl: &mut GlGraphics, args: &RenderArgs, scale: &i32){
         const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
-        let square = graphics::rectangle::square(
-            self.position.x as f64,
-            self.position.y as f64,
-            *scale as f64,
-            );
-        gl.draw(args.viewport(), |c, gl| {
-            let transform = c.transform;
-            graphics::rectangle(GREEN, square, transform, gl);
-        });
+        draw_block(&self.position, gl, args, scale, GREEN);
     }
-    
+
     fn update(&mut self, scale: &i32, size: [u32; 2]){
         match self.direction {
             Direction::Right => self.position.x += scale,
@@ -170,4 +162,16 @@ fn main() {
             game.button_pressed(&b);
         }
     }
+}
+
+fn draw_block(position: &Vector2, gl: &mut GlGraphics, args: &RenderArgs, scale: &i32, color: [f32; 4]){
+    let square = graphics::rectangle::square(
+        position.x as f64,
+        position.y as f64,
+        *scale as f64,
+        );
+    gl.draw(args.viewport(), |c, gl| {
+        let transform = c.transform;
+        graphics::rectangle(color, square, transform, gl);
+    });
 }
