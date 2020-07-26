@@ -47,7 +47,7 @@ impl Game {
 }
 
 struct Snake {
-    position: Vector2,
+    position: Point,
     direction: Direction
 }
 
@@ -81,13 +81,13 @@ impl Snake {
     }
 }
 
-struct Vector2 {
+struct Point {
     x: i32,
     y: i32
 }
 
 struct Fruit {
-    position: Vector2,
+    position: Point,
 }
 
 impl Fruit {
@@ -98,7 +98,7 @@ impl Fruit {
     fn random(scale: i32,size: [u32; 2]) -> Fruit{
         let mut rng = thread_rng();
         Fruit{
-            position: Vector2{
+            position: Point{
                 x: rng.gen_range(0, size[0] as i32 / scale) * scale,
                 y: rng.gen_range(0, size[1] as i32 / scale) * scale,
             }
@@ -106,7 +106,7 @@ impl Fruit {
     }
 }
 
-impl std::cmp::PartialEq for Vector2{
+impl std::cmp::PartialEq for Point{
     fn eq(&self, other: &Self) -> bool {
         self.x == other.x && self.y == other.y
     }
@@ -129,7 +129,7 @@ fn main() {
     let mut game = Game{
         gl: GlGraphics::new(opengl),
         snake: Snake {
-            position: Vector2 {
+            position: Point {
                 x: 50,
                 y: 100
             },
@@ -156,7 +156,7 @@ fn main() {
     }
 }
 
-fn draw_block(position: &Vector2, gl: &mut GlGraphics, args: &RenderArgs, scale: &i32, color: [f32; 4]){
+fn draw_block(position: &Point, gl: &mut GlGraphics, args: &RenderArgs, scale: &i32, color: [f32; 4]){
     let square = graphics::rectangle::square(
         position.x as f64,
         position.y as f64,
