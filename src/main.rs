@@ -38,7 +38,7 @@ impl Game {
         self.snake.update(&self.scale, self.size);
         if self.snake.position == self.fruit.position {
             self.fruit = Fruit::random(self.scale, self.size);
-            self.snake.length_to_grow += 1;
+            self.snake.length_to_grow += 2;
         }
     }
 
