@@ -49,6 +49,19 @@ impl Game {
         if self.snake.alive {
             self.snake.change_direction(&b);
         } else {
+            if let Some(c) = self.continue_y_n(&b){
+                if c {
+                    self.snake = Snake::new();
+                }
+            }
+        }
+    }
+
+    fn continue_y_n(&mut self, b: &ButtonArgs) -> Option<bool>{
+        match b.button {
+            Button::Keyboard(Key::Y) => return Some(true),
+            Button::Keyboard(Key::N) => return Some(false),
+            _ => return None,
         }
     }
 }
@@ -107,6 +120,20 @@ impl Snake {
         const DARK_GREEN: [f32; 4] = [0.0, 0.7, 0.0, 1.0];
         for p in &self.tail{
             draw_block(&p, gl, args, scale, DARK_GREEN);
+        }
+    }
+
+    fn new() -> Snake{
+        Snake{
+            position: Point {
+                x: 200,
+                y: 200,
+            },
+            direction: Direction::Up,
+            length: 0,
+            length_to_grow: 0,
+            tail: vec![],
+            alive: true,
         }
     }
 }
