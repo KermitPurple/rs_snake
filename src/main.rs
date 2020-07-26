@@ -94,8 +94,8 @@ impl Snake {
             Direction::Up => self.position.y -= scale,
             Direction::Down => self.position.y += scale,
         }
-        if self.position.x < 0 || self.position.x >= size[0] as i32 || self.position.y < 0 || self.position.y >= size[1] as i32 {
-            self.alive = false;
+        if self.tail.contains(&self.position) || self.position.x < 0 || self.position.x >= size[0] as i32 || self.position.y < 0 || self.position.y >= size[1] as i32 {
+                    self.alive = false;
         }
     }
 
