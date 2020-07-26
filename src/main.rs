@@ -93,15 +93,7 @@ struct Fruit {
 impl Fruit {
     fn render(&self, gl: &mut GlGraphics, args: &RenderArgs, scale: &i32){
         const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
-        let square = graphics::rectangle::square(
-            self.position.x as f64,
-            self.position.y as f64,
-            *scale as f64,
-            );
-        gl.draw(args.viewport(), |c, gl| {
-            let transform = c.transform;
-            graphics::rectangle(RED, square, transform, gl);
-        });
+        draw_block(&self.position, gl, args, scale, RED);
     }
     fn random(scale: i32,size: [u32; 2]) -> Fruit{
         let mut rng = thread_rng();
