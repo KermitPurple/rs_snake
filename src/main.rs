@@ -35,7 +35,7 @@ impl Game {
     }
 
     fn update(&mut self){
-        self.snake.update(&self.scale);
+        self.snake.update(&self.scale, self.size);
         if self.snake.position == self.fruit.position {
             self.fruit = Fruit::random(self.scale, self.size);
         }
@@ -65,13 +65,16 @@ impl Snake {
         });
     }
     
-    fn update(&mut self, scale: &i32){
+    fn update(&mut self, scale: &i32, size: [u32; 2]){
         match self.direction {
             Direction::Right => self.position.x += scale,
             Direction::Left => self.position.x -= scale,
             Direction::Up => self.position.y -= scale,
             Direction::Down => self.position.y += scale,
             _ => unreachable!(),
+        }
+        if self.position.x < 0 || self.position.x >= size[0] as i32 || self.position.y < 0 || self.position.y >= size[1] as i32 {
+            println!("Dead");
         }
     }
 
