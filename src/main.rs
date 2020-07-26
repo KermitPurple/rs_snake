@@ -10,6 +10,7 @@ use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent, ButtonEven
 use piston::window::WindowSettings;
 use piston::Button;
 use piston::Key;
+use rand::prelude::*;
 
 enum Direction {
     Right, Left, Up, Down
@@ -104,12 +105,22 @@ impl Fruit {
             graphics::rectangle(RED, square, transform, gl);
         });
     }
+    fn random(scale: i32,size: [u32; 2]) -> Fruit{
+        let mut rng = thread_rng();
+        Fruit{
+            position: Vector2{
+                x: rng.gen_range(0, size[0] as i32 / scale) * scale,
+                y: rng.gen_range(0, size[1] as i32 / scale) * scale,
+            }
+        }
+    }
 }
 
 fn main() {
     let opengl = OpenGL::V3_2;
 
     const SIZE: [u32; 2] = [400, 400];
+    const SCALE: i32 = 10;
 
     let mut window: Window = WindowSettings::new(
         "RsSnake",
@@ -128,14 +139,9 @@ fn main() {
             },
             direction: Direction::Up
         },
-        scale: 10,
+        scale: SCALE,
         size: SIZE,
-        fruit: Fruit {
-            position: Vector2 {
-                x: 20,
-                y: 30,
-            },
-        },
+        fruit: Fruit::random(SCALE, SIZE),
     };
 
     let mut settings = EventSettings::new();
