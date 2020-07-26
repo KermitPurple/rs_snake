@@ -13,6 +13,7 @@ use piston::Key;
 use crate::piston::Window;
 use rand::prelude::*;
 
+#[derive(PartialEq)]
 enum Direction {
     Right, Left, Up, Down
 }
@@ -28,10 +29,10 @@ struct Game {
 impl Game {
     fn render(&mut self, arg: &RenderArgs){
         const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
-        self.gl.draw(arg.viewport(), |_c, gl| {
-            graphics::clear(BLACK, gl);
-        });
         if self.snake.alive{
+            self.gl.draw(arg.viewport(), |_c, gl| {
+                graphics::clear(BLACK, gl);
+            });
             self.fruit.render(&mut self.gl, arg, &self.scale);
             self.snake.render(&mut self.gl, arg, &self.scale);
         } else {
@@ -95,16 +96,32 @@ impl Snake {
             Direction::Down => self.position.y += scale,
         }
         if self.tail.contains(&self.position) || self.position.x < 0 || self.position.x >= size[0] as i32 || self.position.y < 0 || self.position.y >= size[1] as i32 {
-                    self.alive = false;
+            self.alive = false;
         }
     }
 
     fn change_direction(&mut self, b: &ButtonArgs){
         match b.button {
-            Button::Keyboard(Key::D)|Button::Keyboard(Key::Right) => self.direction = Direction::Right,
-            Button::Keyboard(Key::A)|Button::Keyboard(Key::Left) => self.direction = Direction::Left,
-            Button::Keyboard(Key::W)|Button::Keyboard(Key::Up) => self.direction = Direction::Up,
-            Button::Keyboard(Key::S)|Button::Keyboard(Key::Down) => self.direction = Direction::Down,
+            Button::Keyboard(Key::D)|Button::Keyboard(Key::Right) => {
+                if self.direction != Direction::Left {
+                    self.direction = Direction::Right
+                }
+            },
+            Button::Keyboard(Key::A)|Button::Keyboard(Key::Left) => {
+                if self.direction != Direction::Right {
+                    self.direction = Direction::Left
+                }
+            },
+            Button::Keyboard(Key::W)|Button::Keyboard(Key::Up) => {
+                if self.direction != Direction::Down {
+                    self.direction = Direction::Up
+                }
+            },
+            Button::Keyboard(Key::S)|Button::Keyboard(Key::Down) => {
+                if self.direction != Direction::Up {
+                    self.direction = Direction::Down
+                }
+            },
             _ => ()
         }
     }
