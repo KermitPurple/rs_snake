@@ -141,7 +141,7 @@ impl Snake {
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq)]
 struct Point {
     x: i32,
     y: i32
@@ -164,12 +164,6 @@ impl Fruit {
                 y: rng.gen_range(0, size[1] as i32 / scale) * scale,
             }
         }
-    }
-}
-
-impl std::cmp::PartialEq for Point{
-    fn eq(&self, other: &Self) -> bool {
-        self.x == other.x && self.y == other.y
     }
 }
 
