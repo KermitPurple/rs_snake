@@ -3,13 +3,14 @@ extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston;
 
-use glutin_window::GlutinWindow as Window;
+use glutin_window::GlutinWindow;
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateEvent, ButtonEvent, ButtonArgs};
 use piston::window::WindowSettings;
 use piston::Button;
 use piston::Key;
+use crate::piston::Window;
 use rand::prelude::*;
 
 enum Direction {
@@ -45,13 +46,16 @@ impl Game {
         }
     }
 
-    fn button_pressed(&mut self, b: &ButtonArgs){
+    fn button_pressed(&mut self, b: &ButtonArgs, w: &mut GlutinWindow){
         if self.snake.alive {
             self.snake.change_direction(&b);
         } else {
             if let Some(c) = self.continue_y_n(&b){
                 if c {
                     self.snake = Snake::new();
+                    self.fruit = Fruit::random(self.scale, self.size);
+                } else {
+                    w.set_should_close(true);
                 }
             }
         }
@@ -176,7 +180,7 @@ fn main() {
     const SIZE: [u32; 2] = [400, 400];
     const SCALE: i32 = 10;
 
-    let mut window: Window = WindowSettings::new(
+    let mut window: GlutinWindow = WindowSettings::new(
         "RsSnake",
         SIZE,
         ).graphics_api(opengl)
@@ -213,7 +217,7 @@ fn main() {
             game.update();
         }
         if let Some(b) = e.button_args(){
-            game.button_pressed(&b);
+            game.button_pressed(&b, &mut window);
         }
     }
 }
