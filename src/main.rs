@@ -38,6 +38,7 @@ impl Game {
         self.snake.update(&self.scale, self.size);
         if self.snake.position == self.fruit.position {
             self.fruit = Fruit::random(self.scale, self.size);
+            self.snake.length_to_grow += 1;
         }
     }
 
@@ -48,16 +49,21 @@ impl Game {
 
 struct Snake {
     position: Point,
-    direction: Direction
+    direction: Direction,
+    length: u32,
+    length_to_grow: u32,
+    tail: Vec<Point>,
 }
 
 impl Snake {
-    fn render(&self, gl: &mut GlGraphics, args: &RenderArgs, scale: &i32){
+    fn render(&mut self, gl: &mut GlGraphics, args: &RenderArgs, scale: &i32){
         const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
         draw_block(&self.position, gl, args, scale, GREEN);
+        self.render_tail(gl, args, scale);
     }
 
     fn update(&mut self, scale: &i32, size: [u32; 2]){
+        self.update_tail();
         match self.direction {
             Direction::Right => self.position.x += scale,
             Direction::Left => self.position.x -= scale,
@@ -79,8 +85,26 @@ impl Snake {
             _ => ()
         }
     }
+
+    fn update_tail(&mut self){
+        self.tail.insert(0, self.position);
+        if self.length_to_grow > 0 {
+            self.length_to_grow -= 1;
+            self.length += 1;
+        } else {
+            self.tail.pop();
+        }
+    }
+
+    fn render_tail(&mut self, gl: &mut GlGraphics, args: &RenderArgs, scale: &i32){
+        const DARK_GREEN: [f32; 4] = [0.0, 0.7, 0.0, 1.0];
+        for p in &self.tail{
+            draw_block(&p, gl, args, scale, DARK_GREEN);
+        }
+    }
 }
 
+#[derive(Copy, Clone)]
 struct Point {
     x: i32,
     y: i32
@@ -133,7 +157,10 @@ fn main() {
                 x: 50,
                 y: 100
             },
-            direction: Direction::Up
+            direction: Direction::Up,
+            length: 0,
+            length_to_grow: 0,
+            tail: vec![],
         },
         scale: SCALE,
         size: SIZE,
